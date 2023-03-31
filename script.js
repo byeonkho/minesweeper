@@ -26,18 +26,41 @@ generateGrid(10)
 // SEARCH KEY
 
 // this function takes in the coordinates of the clicked cell and returns the 8 adjacent (or less) cells to be searched in an array.
+//    return an array of 9 elements (including center cell) containing the object positions within the data structure to be evaluated.
+//    e.g passing in a cell with coordinates (1,1) will return an array of [(0,0), (1,0), (2, 0), (0, 1) etc.. 
+//    representing the 8 adjacent cells. if the returned cell does not exist in the grid, then return null for that element.
 
-const searchKey = (cellCoordinates) => {
-   // return an array of 8 elements containing the object positions within the data structure to be evaluated.
-   // e.g passing in a cell with coordinates (1,1) will return an array of [(0,0), (1,0), (2, 0), (0, 1) etc.. 
-   // representing the 8 adjacent cells. if the returned cell does not exist in the grid, then return undefined / some boolean.
+const searchKey = ([x, y]) => {
+    let searchArray = [];
+    let index = 0;
+    searchArray.push(
+        [x - 1, y - 1],
+        [x, y - 1],
+        [x + 1, y - 1],
+        [x - 1, y],
+        [x, y], //center cell (index 5)
+        [x + 1, y],
+        [x - 1, y + 1],
+        [x, y + 1],
+        [x + 1, y + 1]
+    );
 
-// SEARCH ARRAY
+    for (el of searchArray) {
+        if (
+            el[0] <= 0 ||
+            el[0] > globalGridLength ||
+            el[1] <= 0 ||
+            el[1] > globalGridLength
+        ) {
+            searchArray[index] = null;
+        }
+        index++
+    }
+    return searchArray; // is an array of 9 elements
+};
 
-// the array to be used in the SEARCH ALGORITHM.
-// this array should also include the center cell so it can be referenced.
-   return searchArray
-}
+
+
 
 // SEARCH ALGORITHM
 
