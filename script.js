@@ -2,6 +2,20 @@
 
 https://imgur.com/a/m1h43Zu
 
+const gridContainer = [];
+
+const generateGrid = (gridLength) => {
+  for (let x = 1; x <= gridLength; x++) {
+    for (let y = 1; y <= gridLength; y++) {
+      const newCellObj = { coords: [x, y] };
+      gridContainer.push(newCellObj);
+    }
+  }
+};
+
+generateGrid(10)
+
+
 // HOW TO ENSURE THAT FIRST CELL CLICKED IS NOT A MINE??
 
 // 1. this is beyond scope of MVP.
