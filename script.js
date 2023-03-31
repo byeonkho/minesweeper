@@ -8,15 +8,32 @@ let globalGridLength = 0;
 const generateGrid = (gridLength) => {
     globalGridLength = gridLength;
     for (let x = 1; x <= gridLength; x++) {
-    for (let y = 1; y <= gridLength; y++) {
-      const newCellObj = { coords: [x, y], isRevealed: false, isMine: false};
-      gridContainer.push(newCellObj);
+        for (let y = 1; y <= gridLength; y++) {
+            const newCellObj = {
+                coords: [x, y],
+                isRevealed: false,
+                isMine: false,
+                mineCounter: 0
+            };
+            gridContainer.push(newCellObj);
+        }
     }
-  }
 };
 
-generateGrid(10)
+//MINE GENERATOR
+const generateMines = (numOfMines) => {
+    let minesPlaced = 0
+  
+    while (minesPlaced < numOfMines) {
+      const random = Math.floor(Math.random() * gridContainer.length)
+      gridContainer[random].isMine = true
+      minesPlaced++
+    }
+  }
 
+
+generateGrid(10)
+generateMines()
 
 // HOW TO ENSURE THAT FIRST CELL CLICKED IS NOT A MINE??
 
