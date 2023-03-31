@@ -3,9 +3,11 @@
 https://imgur.com/a/m1h43Zu
 
 const gridContainer = [];
+let globalGridLength = 0;
 
 const generateGrid = (gridLength) => {
-  for (let x = 1; x <= gridLength; x++) {
+    globalGridLength = gridLength;
+    for (let x = 1; x <= gridLength; x++) {
     for (let y = 1; y <= gridLength; y++) {
       const newCellObj = { coords: [x, y], isRevealed: false, isMine: false};
       gridContainer.push(newCellObj);
