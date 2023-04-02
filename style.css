@@ -1,0 +1,17 @@
+.container {
+    display: grid;
+    grid-template-rows: repeat(10, 50px);
+    grid-template-columns: repeat(10, 50px);
+    border-style: solid;
+    border-color: pink;
+    justify-content: center;
+}
+
+.cell {
+    border-style: solid;
+    border-color: green;
+}
+.cell-1 {
+    grid-row: 1/1;
+    grid-column: 1/1;
+}

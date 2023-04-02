@@ -1,7 +1,5 @@
 // DATA STRUCTURE
 
-https://imgur.com/a/m1h43Zu
-
 const gridContainer = [];
 let globalGridLength = 0;
 
@@ -13,7 +11,7 @@ const generateGrid = (gridLength) => {
                 coords: [x, y],
                 isRevealed: false,
                 isMine: false,
-                mineCounter: 0
+                mineCounter: 0,
             };
             gridContainer.push(newCellObj);
         }
@@ -22,18 +20,17 @@ const generateGrid = (gridLength) => {
 
 //MINE GENERATOR
 const generateMines = (numOfMines) => {
-    let minesPlaced = 0
-  
+    let minesPlaced = 0;
+
     while (minesPlaced < numOfMines) {
-      const random = Math.floor(Math.random() * gridContainer.length)
-      gridContainer[random].isMine = true
-      minesPlaced++
+        const random = Math.floor(Math.random() * gridContainer.length);
+        gridContainer[random].isMine = true;
+        minesPlaced++;
     }
-  }
+};
 
-
-generateGrid(10)
-generateMines()
+generateGrid(3);
+generateMines();
 
 // HOW TO ENSURE THAT FIRST CELL CLICKED IS NOT A MINE??
 
@@ -41,12 +38,11 @@ generateMines()
 // 2. SOLUTIONS
 //    a. if first cell clicked is a mine, refresh the board and start again
 
-
 // SEARCH KEY
 
 // this function takes in the coordinates of the clicked cell and returns the 8 adjacent (or less) cells to be searched in an array.
 //    return an array of 9 elements (including center cell) containing the object positions within the data structure to be evaluated.
-//    e.g passing in a cell with coordinates (1,1) will return an array of [(0,0), (1,0), (2, 0), (0, 1) etc.. 
+//    e.g passing in a cell with coordinates (1,1) will return an array of [(0,0), (1,0), (2, 0), (0, 1) etc..
 //    representing the 8 adjacent cells. if the returned cell does not exist in the grid, then return null for that element.
 
 const searchKey = ([x, y]) => {
@@ -73,13 +69,10 @@ const searchKey = ([x, y]) => {
         ) {
             searchArray[index] = null;
         }
-        index++
+        index++;
     }
     return searchArray; // is an array of 9 elements
 };
-
-
-
 
 // SEARCH ALGORITHM
 
@@ -88,52 +81,61 @@ const searchKey = ([x, y]) => {
 //    a. checks if the clicked cell is a mine.
 //       i. if yes, game over.
 //       ii. if no, proceed to 3.
-// 3. evaluate cell in SEARCH ARRAY 
-const searchCellsForMine = (searchArray) => {
-    let mineCount = 0
-    for (cell in searchArray) {
-        // checks if current cell is center cell and is a mine
-        if (cell === mine && cell.index === searchArray.[5]) {
-           return KABOOM()
-        }
-        // checks for undefined cells (out of grid) and skips.
-       if (cell === out of grid) {
-           continue
-       }
-       }
-       // checks if cell is a mine and adds to center cell mine count.
-       if (cell === mine) {
-           mineCount += 1
-           cell.alreadySearched = true
-       }
-       update center cell minecount
-       
-   } 
+// 3. evaluate cell in SEARCH ARRAY
+// const searchCellsForMine = (searchArray) => {
+//     let mineCount = 0
+//     for (cell in searchArray) {
+//         // checks if current cell is center cell and is a mine
+//         if (cell === mine && cell.index === searchArray.[5]) {
+//            return KABOOM()
+//         }
+//         // checks for undefined cells (out of grid) and skips.
+//        if (cell === out of grid) {
+//            continue
+//        }
+//        }
+//        // checks if cell is a mine and adds to center cell mine count.
+//        if (cell === mine) {
+//            mineCount += 1
+//            cell.alreadySearched = true
+//        }
+//        update center cell minecount
 
-const searchCellsNoMine = (searchArray) => {
-   for (cell in searchArray) {
-    // checks for undefined cells (out of grid) and skips.
-        if (cell === out of grid) {
-            continue
-   }
-        if (cell.alreadySearched === true) {
-            continue
-        }
-        if (cell != mine) {
-            searchAlgo(cell.coordinates)
-   }
-}
-}
+//    }
 
-const searchAlgo = (cellCoordinates) => {
-   
-    let searchArray = searchKey(cellCoordinates)
-    searchCellsForMine(searchArray)
+// const searchCellsNoMine = (searchArray) => {
+//    for (cell in searchArray) {
+//     // checks for undefined cells (out of grid) and skips.
+//         if (cell === out of grid) {
+//             continue
+//    }
+//         if (cell.alreadySearched === true) {
+//             continue
+//         }
+//         if (cell != mine) {
+//             searchAlgo(cell.coordinates)
+//    }
+// }
+// }
 
-    if (minecount === 0) {
-        searchCellsNoMine(searchArray)
-//    b. if cell is not a mine, execute SEARCH KEY and run SEARCH ALGORITHM on current centered cell.
-//       i. if any mines are found, add MINECOUNT += (n) and do not execute further search loops after all 8 adjacent cells are evaluated.
-//      ii. if no mines are found, execute SEARCH KEY on EACH CELL OF THE CURRENT SEARCHARRAY. use booleans here to exclude already searched cells.
-}
+// const searchAlgo = (cellCoordinates) => {
+
+//     let searchArray = searchKey(cellCoordinates)
+//     searchCellsForMine(searchArray)
+
+//     if (minecount === 0) {
+//         searchCellsNoMine(searchArray)
+// //    b. if cell is not a mine, execute SEARCH KEY and run SEARCH ALGORITHM on current centered cell.
+// //       i. if any mines are found, add MINECOUNT += (n) and do not execute further search loops after all 8 adjacent cells are evaluated.
+// //      ii. if no mines are found, execute SEARCH KEY on EACH CELL OF THE CURRENT SEARCHARRAY. use booleans here to exclude already searched cells.
+// }
+// }
+
+const containerEl = document.querySelector(".container");
+
+for (i = 0; i < gridContainer.length; i++) {
+    const newButton = document.createElement("button");
+    newButton.innerText = gridContainer[i].coords;
+
+    containerEl.appendChild(newButton);
 }
