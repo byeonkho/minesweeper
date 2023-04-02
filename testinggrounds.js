@@ -29,7 +29,7 @@ const generateMines = (numOfMines) => {
     }
 };
 
-generateGrid(5);
+generateGrid(10);
 generateMines();
 
 // HOW TO ENSURE THAT FIRST CELL CLICKED IS NOT A MINE??
@@ -46,11 +46,11 @@ generateMines();
 //    representing the 8 adjacent cells. if the returned cell does not exist in the grid, then return null for that element.
 
 const searchKey = ([x, y]) => {
-    x = parseInt(x)
-    y = parseInt(y)
+    x = parseInt(x);
+    y = parseInt(y);
     let searchArray = [];
     let index = 0;
-    
+
     searchArray.push(
         [x - 1, y - 1],
         [x, y - 1],
@@ -141,23 +141,22 @@ const containerEl = document.querySelector(".container");
 containerEl.style.gridTemplateRows = `repeat(${globalGridLength}, 40px)`;
 containerEl.style.gridTemplateColumns = `repeat(${globalGridLength}, 40px)`;
 
-
 // returns ID of button on click
+
 const returnID = (el) => {
     const isButton = el.target.nodeName === "BUTTON";
     if (!isButton) {
         return;
     }
-    let clickedCoords = el.target.id.split(",")
+    let clickedCoords = el.target.id.split(",");
 
-    const searchArray = searchKey(clickedCoords)
-    console.log(searchArray)
+    const searchArray = searchKey(clickedCoords);
+    console.log(searchArray);
 };
-
-
 
 containerEl.addEventListener("click", returnID);
 
+// creates buttons and assigns coords to ID from the gridContainer array.
 for (i = 0; i < gridContainer.length; i++) {
     const newButton = document.createElement("button");
     newButton.setAttribute("id", gridContainer[i].coords);
