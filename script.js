@@ -2,6 +2,8 @@
 
 const gridContainer = [];
 let globalGridLength = 0;
+let searchArray = [];
+let clickedCoords = null;
 
 const generateGrid = (gridLength) => {
     globalGridLength = gridLength;
@@ -22,15 +24,26 @@ const generateGrid = (gridLength) => {
 const generateMines = (numOfMines) => {
     let minesPlaced = 0;
 
+    // catches infinite loop if mines generated > number of cells
+    if (numOfMines > gridContainer.length) {
+      alert("too many mines")
+      return
+    }
+
     while (minesPlaced < numOfMines) {
         const random = Math.floor(Math.random() * gridContainer.length);
-        gridContainer[random].isMine = true;
+        if (gridContainer[random].isMine) {
+            continue
+        } else {
+            gridContainer[random].isMine = true;
+        }
+
         minesPlaced++;
     }
 };
 
 generateGrid(5);
-generateMines();
+generateMines(5);
 
 // HOW TO ENSURE THAT FIRST CELL CLICKED IS NOT A MINE??
 
@@ -46,11 +59,11 @@ generateMines();
 //    representing the 8 adjacent cells. if the returned cell does not exist in the grid, then return null for that element.
 
 const searchKey = ([x, y]) => {
-    x = parseInt(x)
-    y = parseInt(y)
+    // x = parseInt(x);
+    // y = parseInt(y);
     let searchArray = [];
     let index = 0;
-    
+
     searchArray.push(
         [x - 1, y - 1],
         [x, y - 1],
@@ -105,22 +118,22 @@ const searchKey = ([x, y]) => {
 //        }
 //        update center cell minecount
 
-//    }
+// }
 
-// const searchCellsNoMine = (searchArray) => {
-//    for (cell in searchArray) {
-//     // checks for undefined cells (out of grid) and skips.
-//         if (cell === out of grid) {
-//             continue
-//    }
-//         if (cell.alreadySearched === true) {
-//             continue
-//         }
-//         if (cell != mine) {
-//             searchAlgo(cell.coordinates)
-//    }
-// }
-// }
+const searchCellsNoMine = (searchArray) => {
+   for (cell in searchArray) {
+    // checks for undefined cells (out of grid) and skips.
+        if (cell === out of grid) {
+            continue
+   }
+        if (cell.alreadySearched === true) {
+            continue
+        }
+        if (cell != mine) {
+            searchAlgo(cell.coordinates)
+   }
+}
+}
 
 // const searchAlgo = (cellCoordinates) => {
 
@@ -141,23 +154,58 @@ const containerEl = document.querySelector(".container");
 containerEl.style.gridTemplateRows = `repeat(${globalGridLength}, 40px)`;
 containerEl.style.gridTemplateColumns = `repeat(${globalGridLength}, 40px)`;
 
+// sets ID of button on click in clickedCoords
 
-// returns ID of button on click
-const returnID = (el) => {
+const returnCoords = (el) => {
     const isButton = el.target.nodeName === "BUTTON";
     if (!isButton) {
         return;
     }
-    let clickedCoords = el.target.id.split(",")
+    clickedCoords = el.target.id.split(",");
 
-    const searchArray = searchKey(clickedCoords)
-    console.log(searchArray)
+    for (i = 0; i < clickedCoords.length; i++) {
+        clickedCoords[i] = parseInt(clickedCoords[i]);
+    }
+
+    // let index = gridContainer.findIndex((gridEl) => {
+    //   return JSON.stringify(gridEl.coords) === JSON.stringify(clickedCoords)
+    // })
 };
 
+const checkMine = () => {
+    let index = gridContainer.findIndex((el) => {
+        return JSON.stringify(el.coords) === JSON.stringify(clickedCoords);
+    });
 
+    if (gridContainer[index].isMine === true) {
+        console.log("boomz");
+    }
+    // let index = gridContainer.findIndex((el) => {
+    //   return JSON.stringify(el.coords) === JSON.stringify(coords1)
+    // })
 
-containerEl.addEventListener("click", returnID);
+    // if (gridContainer[index].isMine = true) {
+    //   alert("hit a mine")
+    // }
+};
+const runSearch = () => {
+    checkMine()
+    const searchArray = searchKey(clickedCoords);
 
+    // returns the index of the gridContainer el cell matching coordinates of searchArray.
+    for (i of searchArray) {
+        let index = gridContainer.findIndex((el) => {
+            return JSON.stringify(el.coords) === JSON.stringify(i);
+        });
+        // console.log(index);
+    }
+};
+
+containerEl.addEventListener("click", returnCoords);
+// containerEl.addEventListener("click", checkMine);
+containerEl.addEventListener("click", runSearch);
+
+// creates buttons and assigns coords to ID from the gridContainer array.
 for (i = 0; i < gridContainer.length; i++) {
     const newButton = document.createElement("button");
     newButton.setAttribute("id", gridContainer[i].coords);

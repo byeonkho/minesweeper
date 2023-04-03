@@ -11,11 +11,7 @@
 .notRevealed {
     background-color: pink;
 }
-.cell {
-    border-style: solid;
-    border-color: green;
-}
-.cell-1 {
-    grid-row: 1/1;
-    grid-column: 1/1;
+
+.isMine {
+    background-color: red;
 }
