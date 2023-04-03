@@ -12,6 +12,10 @@
     background-color: pink;
 }
 
+.isRevealed {
+    background-color: green;
+}
+
 .isMine {
     background-color: red;
 }
