@@ -1,12 +1,20 @@
+// HOW TO ENSURE THAT FIRST CELL CLICKED IS NOT A MINE??
+
+// 1. this is beyond scope of MVP.
+// 2. SOLUTIONS
+//    a. if first cell clicked is a mine, refresh the board and start again
+
 // INITIALIZE GLOBAL VARIABLES
 
-const gridContainer = [];
-let globalGridLength = 0;
-let clickedCellIndex = null;
+let gridContainer = [];
+let globalGridLength = undefined;
+let clickedCellIndex = undefined;
 let foundMine = false;
+let buttons = undefined; // define empty var document.querySelector for all buttons
+const containerEl = document.querySelector(".container");
 
-// GRID GENERATOR
-const generateGrid = (gridLength) => {
+// GRID DATA STRUCTURE GENERATOR
+const generateGrid = (gridLength = 10) => {
     globalGridLength = gridLength;
     for (let y = 1; y <= gridLength; y++) {
         for (let x = 1; x <= gridLength; x++) {
@@ -19,10 +27,17 @@ const generateGrid = (gridLength) => {
             gridContainer.push(newCellObj);
         }
     }
+    console.log("grid generated");
+};
+
+// DRAWS GRID ON HTML - draw grid rows and columns based on globalGridLength.
+const drawGrid = () => {
+    containerEl.style.gridTemplateRows = `repeat(${globalGridLength}, 40px)`;
+    containerEl.style.gridTemplateColumns = `repeat(${globalGridLength}, 40px)`;
 };
 
 // MINE GENERATOR
-const generateMines = (numOfMines) => {
+const generateMines = (numOfMines = 15) => {
     let minesPlaced = 0;
 
     // catches infinite loop if mines generated > number of cells
@@ -43,12 +58,58 @@ const generateMines = (numOfMines) => {
     }
 };
 
+// CREATE BUTTON ELEMENTS AND APPEND TO HTML CONTAINER
+
+const createButtons = () => {
+    for (i = 0; i < gridContainer.length; i++) {
+        const newButton = document.createElement("button");
+        newButton.setAttribute("id", gridContainer[i].coords);
+        if (gridContainer[i].isRevealed === false) {
+            newButton.classList.add("notRevealed");
+        }
+        if (gridContainer[i].isMine === true) {
+            newButton.classList.add("isMine");
+        }
+
+        containerEl.appendChild(newButton);
+    }
+    buttons = document.querySelectorAll("button");
+};
+
+// MAIN CLICK FUNCTION TO EXECUTE
+
+const initClick = (el) => {
+    // gets coords of clicked button and assigns to clickedCoords
+    const isButton = el.target.nodeName === "BUTTON";
+    if (!isButton) {
+        return;
+    }
+    let clickedCoords = el.target.id.split(",");
+
+    // converts clickedCoords array to int
+    for (i = 0; i < clickedCoords.length; i++) {
+        clickedCoords[i] = parseInt(clickedCoords[i]);
+    }
+
+    // assigns clicked cell index to global variable clickedCellIndex
+    let index = gridContainer.findIndex((el) => {
+        return JSON.stringify(el.coords) === JSON.stringify(clickedCoords);
+    });
+    clickedCellIndex = index;
+
+    runSearch(clickedCoords, true);
+    gameStateUpdate();
+};
+
 // INITIALIZE GAME STATE
 
-generateGrid(10);
-generateMines(10);
+generateGrid();
+generateMines();
+drawGrid();
+createButtons();
+containerEl.addEventListener("click", initClick);
 
-const containerEl = document.querySelector(".container");
+// assigns buttons DOM element to variable after buttons created
 
 const gameStateUpdate = () => {
     for (button of buttons) {
@@ -77,32 +138,6 @@ const gameStateUpdate = () => {
     }
 };
 
-// sets grid rows and columns based on globalGridLength.
-containerEl.style.gridTemplateRows = `repeat(${globalGridLength}, 40px)`;
-containerEl.style.gridTemplateColumns = `repeat(${globalGridLength}, 40px)`;
-
-// creates buttons and assigns coords to ID from the gridContainer array.
-for (i = 0; i < gridContainer.length; i++) {
-    const newButton = document.createElement("button");
-    newButton.setAttribute("id", gridContainer[i].coords);
-    if (gridContainer[i].isRevealed === false) {
-        newButton.classList.add("notRevealed");
-    }
-    if (gridContainer[i].isMine === true) {
-        newButton.classList.add("isMine");
-    }
-    containerEl.appendChild(newButton);
-}
-
-// assigns buttons DOM element to variable after buttons created
-const buttons = document.querySelectorAll("button");
-
-// HOW TO ENSURE THAT FIRST CELL CLICKED IS NOT A MINE??
-
-// 1. this is beyond scope of MVP.
-// 2. SOLUTIONS
-//    a. if first cell clicked is a mine, refresh the board and start again
-
 // GAME OVER
 
 const displayGameOver = () => {
@@ -116,12 +151,35 @@ const displayGameOver = () => {
     document.body.appendChild(gameOverContainer);
     gameOverContainer.appendChild(gameOverText);
 
+    // create new game button
     const newGameButton = document.createElement("button");
-    newGameButton.innerHTML = "New Game"
-    newGameButton.classList.add("newGameButton")
+    newGameButton.innerHTML = "New Game";
+    newGameButton.classList.add("newGameButton");
     gameOverContainer.appendChild(newGameButton);
 
-    return;
+    gameOverContainer.addEventListener("click", newGameClick);
+};
+
+const newGameClick = (el) => {
+    const isButton = el.target.nodeName === "BUTTON";
+    if (!isButton) {
+        return;
+    }
+    resetGame();
+    generateGrid();
+    generateMines();
+    drawGrid();
+    createButtons();
+    gameStateUpdate();
+};
+
+const resetGame = () => {
+    while (containerEl.firstChild) {
+        containerEl.removeChild(containerEl.lastChild);
+    }
+    gridContainer = [];
+    gameOverContainer = document.querySelector(".gameOverContainer");
+    gameOverContainer.remove();
 };
 
 // SEARCH KEY
@@ -156,29 +214,6 @@ const searchKey = ([x, y]) => {
         index++;
     }
     return searchArray; // is an array of 9 elements
-};
-
-const initClick = (el) => {
-    // gets coords of clicked button and assigns to clickedCoords
-    const isButton = el.target.nodeName === "BUTTON";
-    if (!isButton) {
-        return;
-    }
-    let clickedCoords = el.target.id.split(",");
-
-    // converts clickedCoords array to int
-    for (i = 0; i < clickedCoords.length; i++) {
-        clickedCoords[i] = parseInt(clickedCoords[i]);
-    }
-
-    // assigns clicked cell index to global variable clickedCellIndex
-    let index = gridContainer.findIndex((el) => {
-        return JSON.stringify(el.coords) === JSON.stringify(clickedCoords);
-    });
-    clickedCellIndex = index;
-
-    runSearch(clickedCoords, true);
-    gameStateUpdate();
 };
 
 // checks if the clicked cell is a mine.
@@ -245,5 +280,3 @@ const runSearch = (coords) => {
         }
     }
 };
-
-containerEl.addEventListener("click", initClick);
