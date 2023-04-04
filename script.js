@@ -46,7 +46,7 @@ const generateMines = (numOfMines) => {
 // INITIALIZE GAME STATE
 
 generateGrid(10);
-generateMines(10)
+generateMines(10);
 
 const containerEl = document.querySelector(".container");
 
@@ -194,73 +194,35 @@ const checkAdjMines = (searchArray) => {
     // console.log("minecounter", gridContainer[centerCellIndex].mineCounter);
 };
 
-const runSearch = (coords, firstClick) => {
-    if (firstClick === true) {
-        let searchArray = searchKey(coords);
+const runSearch = (coords) => {
+    
+    let searchArray = searchKey(coords);
 
-        if (checkMine() === "end") {
-            // check center cell if isMine
-            console.log("end");
-            return;
-        }
-
-        checkAdjMines(searchArray); // check 8 adj cells if any mines
-
-        if (foundMine === true) {
-            return;
-        }
-
-        // if no mines found
-
-        for (array of searchArray) {
-            if (array === null) {
-                continue;
-            }
-            let index = gridContainer.findIndex((el) => {
-                return JSON.stringify(el.coords) === JSON.stringify(array);
-            });
-
-            // PROBLY UNNEEDED XD
-            // if (index === -1) {
-            //     continue;
-            // }
-
-            let newCoords = gridContainer[index].coords;
-            // runs recursive search if square not yet revealed
-            if (gridContainer[index].isRevealed === false) {
-                runSearch(newCoords, false);
-            }
-        }
+    if (checkMine() === "end") {
+        // check center cell if isMine
+        return;
     }
 
-    // 2nd iteration onwards to account for clicked coords vs new coords
-    else if (firstClick === false) {
-        let searchArray = searchKey(coords);
+    checkAdjMines(searchArray); // check 8 adj cells if any mines
 
-        checkAdjMines(searchArray);
+    if (foundMine === true) {
+        return;
+    }
 
-        if (foundMine === true) {
-            return;
+    // if no mines found
+
+    for (array of searchArray) {
+        if (array === null) {
+            continue;
         }
+        let index = gridContainer.findIndex((el) => {
+            return JSON.stringify(el.coords) === JSON.stringify(array);
+        });
 
-        // if no mines found
-
-        for (array of searchArray) {
-            if (array === null) {
-                continue;
-            }
-            let index = gridContainer.findIndex((el) => {
-                return JSON.stringify(el.coords) === JSON.stringify(array);
-            });
-            if (index === -1) {
-                continue;
-            }
-            let newCoords = gridContainer[index].coords;
-
-            // runs recursive search if square not yet revealed
-            if (gridContainer[index].isRevealed === false) {
-                runSearch(newCoords, false);
-            }
+        let newCoords = gridContainer[index].coords;
+        // runs recursive search if square not yet revealed
+        if (gridContainer[index].isRevealed === false) {
+            runSearch(newCoords, false);
         }
     }
 };
