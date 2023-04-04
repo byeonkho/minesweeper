@@ -103,6 +103,27 @@ const buttons = document.querySelectorAll("button");
 // 2. SOLUTIONS
 //    a. if first cell clicked is a mine, refresh the board and start again
 
+// GAME OVER
+
+const displayGameOver = () => {
+    const gameOverContainer = document.createElement("div");
+    gameOverContainer.classList.add("gameOverContainer");
+
+    const gameOverText = document.createElement("div");
+    gameOverText.classList.add("gameOverText");
+    gameOverText.innerHTML = "Game Over";
+
+    document.body.appendChild(gameOverContainer);
+    gameOverContainer.appendChild(gameOverText);
+
+    const newGameButton = document.createElement("button");
+    newGameButton.innerHTML = "New Game"
+    newGameButton.classList.add("newGameButton")
+    gameOverContainer.appendChild(newGameButton);
+
+    return;
+};
+
 // SEARCH KEY
 
 const searchKey = ([x, y]) => {
@@ -163,8 +184,7 @@ const initClick = (el) => {
 // checks if the clicked cell is a mine.
 const checkMine = () => {
     if (gridContainer[clickedCellIndex].isMine === true) {
-        console.log("boomz");
-        return "end";
+        displayGameOver();
     }
 };
 
@@ -195,7 +215,6 @@ const checkAdjMines = (searchArray) => {
 };
 
 const runSearch = (coords) => {
-    
     let searchArray = searchKey(coords);
 
     if (checkMine() === "end") {

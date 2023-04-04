@@ -1,9 +1,9 @@
 .container {
+    display: grid;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    display: grid;
     border-style: solid;
     border-color: green;
 }
@@ -18,4 +18,70 @@
 
 .isMine {
     background-color: red;
+}
+
+.gameOverContainer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-style: solid;
+    width: 500px;
+    height: 200px;
+    background-color: rgb(223, 218, 218);
+}
+
+.gameOverText {
+    position: absolute;
+    left: 50%;
+    top: 35%;
+    transform: translate(-50%, -50%);
+
+    text-align: center;
+    font-size: 40px;
+    font-family: "Arial Black", Gadget, sans-serif;
+    font-size: 16px;
+    letter-spacing: 2px;
+    word-spacing: 2px;
+    color: #000000;
+    font-weight: 700;
+    text-decoration: none solid rgb(68, 68, 68);
+    font-style: normal;
+    font-variant: normal;
+    text-transform: uppercase;
+}
+
+.newGameButton {
+    position: absolute;
+    left: 50%;
+    top: 70%;
+    transform: translate(-50%, -50%);
+
+
+    color: rgb(255, 255, 255);
+    font-size: 10px;
+    line-height: 16px;
+    padding: 6px;
+    border-radius: 5px;
+    font-family: "Arial Black", Gadget, sans-serif;
+    font-weight: 700;
+    text-decoration: none solid rgb(68, 68, 68);
+    font-style: normal;
+    font-variant: normal;
+    text-transform: uppercase;
+    background-image: linear-gradient(
+        to right,
+        rgb(146, 150, 152) 0%,
+        rgb(132, 134, 136) 50%,
+        rgb(59, 60, 61) 100%
+    );
+    box-shadow: rgb(0, 0, 0) 5px 5px 15px 5px;
+    border: 2px solid rgb(242, 242, 242);
+    display: inline-block;
+}
+.newGameButton:hover {
+    background: #1c6ea4;
+}
+.newGameButton:active {
+    background: #144e75;
 }
