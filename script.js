@@ -2,7 +2,6 @@
 
 const gridContainer = [];
 let globalGridLength = 0;
-let clickedCoords = null;
 let clickedCellIndex = null;
 let foundMine = false;
 
@@ -47,7 +46,7 @@ const generateMines = (numOfMines) => {
 // INITIALIZE GAME STATE
 
 generateGrid(10);
-generateMines(15);
+generateMines(10)
 
 const containerEl = document.querySelector(".container");
 
@@ -71,6 +70,7 @@ const gameStateUpdate = () => {
             button.innerText = gridContainer[index].mineCounter;
         }
 
+        // setting button class to isRevealed if true
         if (gridContainer[index].isRevealed === true) {
             button.classList.add("isRevealed");
         }
@@ -116,7 +116,7 @@ const searchKey = ([x, y]) => {
         [x, y - 1],
         [x + 1, y - 1],
         [x - 1, y],
-        [x, y], //center cell (index 5)
+        [x, y], //center cell (index 4)
         [x + 1, y],
         [x - 1, y + 1],
         [x, y + 1],
@@ -137,14 +137,13 @@ const searchKey = ([x, y]) => {
     return searchArray; // is an array of 9 elements
 };
 
-// gets coords of clicked button and assigns to clickedCoords
-
-const returnCoords = (el) => {
+const initClick = (el) => {
+    // gets coords of clicked button and assigns to clickedCoords
     const isButton = el.target.nodeName === "BUTTON";
     if (!isButton) {
         return;
     }
-    clickedCoords = el.target.id.split(",");
+    let clickedCoords = el.target.id.split(",");
 
     // converts clickedCoords array to int
     for (i = 0; i < clickedCoords.length; i++) {
@@ -220,17 +219,24 @@ const runSearch = (coords, firstClick) => {
             let index = gridContainer.findIndex((el) => {
                 return JSON.stringify(el.coords) === JSON.stringify(array);
             });
-            if (index === -1) {
-                continue;
-            }
+
+            // PROBLY UNNEEDED XD
+            // if (index === -1) {
+            //     continue;
+            // }
+
             let newCoords = gridContainer[index].coords;
-            // loop breaker
+            // runs recursive search if square not yet revealed
             if (gridContainer[index].isRevealed === false) {
                 runSearch(newCoords, false);
             }
         }
-    } else if (firstClick === false) {
+    }
+
+    // 2nd iteration onwards to account for clicked coords vs new coords
+    else if (firstClick === false) {
         let searchArray = searchKey(coords);
+
         checkAdjMines(searchArray);
 
         if (foundMine === true) {
@@ -259,4 +265,4 @@ const runSearch = (coords, firstClick) => {
     }
 };
 
-containerEl.addEventListener("click", returnCoords);
+containerEl.addEventListener("click", initClick);
