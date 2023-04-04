@@ -8,7 +8,6 @@
 
 let gridContainer = [];
 let globalGridLength = undefined;
-let clickedCellIndex = undefined;
 let foundMine = false;
 let buttons = undefined; // define empty var document.querySelector for all buttons
 const containerEl = document.querySelector(".container");
@@ -90,13 +89,6 @@ const initClick = (el) => {
     for (i = 0; i < clickedCoords.length; i++) {
         clickedCoords[i] = parseInt(clickedCoords[i]);
     }
-
-    // assigns clicked cell index to global variable clickedCellIndex
-    let index = gridContainer.findIndex((el) => {
-        return JSON.stringify(el.coords) === JSON.stringify(clickedCoords);
-    });
-    clickedCellIndex = index;
-
     runSearch(clickedCoords, true);
     gameStateUpdate();
 };
@@ -217,8 +209,12 @@ const searchKey = ([x, y]) => {
 };
 
 // checks if the clicked cell is a mine.
-const checkMine = () => {
-    if (gridContainer[clickedCellIndex].isMine === true) {
+const checkMine = (coords) => {
+    let index = gridContainer.findIndex((el) => {
+        return JSON.stringify(el.coords) === JSON.stringify(coords);
+    });
+
+    if (gridContainer[index].isMine === true) {
         displayGameOver();
     }
 };
@@ -244,18 +240,18 @@ const checkAdjMines = (searchArray) => {
         return JSON.stringify(el.coords) === JSON.stringify(searchArray[4]);
     });
 
-    gridContainer[centerCellIndex].mineCounter = mineCount;
     gridContainer[centerCellIndex].isRevealed = true;
-    // console.log("minecounter", gridContainer[centerCellIndex].mineCounter);
+    
+    if (foundMine === true) {
+        gridContainer[centerCellIndex].mineCounter = mineCount;
+    }
 };
 
 const runSearch = (coords) => {
-    let searchArray = searchKey(coords);
 
-    if (checkMine() === "end") {
-        // check center cell if isMine
-        return;
-    }
+    checkMine(coords); // check if clicked cell is a mine
+
+    let searchArray = searchKey(coords);
 
     checkAdjMines(searchArray); // check 8 adj cells if any mines
 
