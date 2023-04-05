@@ -9,6 +9,7 @@
 let gridContainer = [];
 let globalGridLength = undefined;
 let globalMines = 0;
+let firstClick = true;
 let buttons = undefined; // define empty var document.querySelector for all buttons
 
 const containerEl = document.querySelector(".container");
@@ -20,6 +21,7 @@ const toggleMinesBtn = document.getElementById("toggleMinesBtn");
 // initializes new game state on clicking "new game" button
 const newGame = (event) => {
     event.preventDefault(); // prevent the default form submission behavior
+    firstClick = true;
 
     // gets input values for gridsize / mines
     if (gridsizeInput.value) {
@@ -30,7 +32,7 @@ const newGame = (event) => {
     if (minesInput.value) {
         globalMines = minesInput.value;
     } else {
-        globalMines = 10;
+        globalMines = 15;
     }
 
     // init game state
@@ -221,6 +223,7 @@ const win = () => {
 
 // INITIALIZES NEW GAME ON CLICKING "New Game" BUTTON
 const newGameClick = (el) => {
+    firstClick = true;
     const isButton = el.target.nodeName === "BUTTON";
     if (!isButton) {
         return;
@@ -250,7 +253,6 @@ const resetGame = () => {
         winContainer.remove();
     }
 };
-
 
 // toggles flag display on / off
 
@@ -331,7 +333,19 @@ const checkMine = (coords) => {
         return JSON.stringify(el.coords) === JSON.stringify(coords);
     });
 
-    if (gridContainer[index].isMine === true) {
+    // if first click of game && cell is a mien, resets game until no mine on cell.
+    if (firstClick === true && gridContainer[index].isMine === true) {
+        resetGame();
+        generateGrid(globalGridLength);
+        generateMines(globalMines);
+        drawGrid();
+        createButtons();
+        gameStateUpdate();
+        checkMine(coords);
+    } else if (firstClick === true && gridContainer[index].isMine === false) {
+        firstClick = false;
+        return;
+    } else if (gridContainer[index].isMine === true) {
         displayGameOver();
     }
 };
@@ -374,6 +388,7 @@ const runSearch = (coords) => {
 
     // check 8 adj cells if any mines. if any found, exit
     if (checkAdjMines(searchArray) === true) {
+        firstClick = false;
         return;
     }
 
