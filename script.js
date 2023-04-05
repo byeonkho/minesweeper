@@ -12,8 +12,8 @@ let globalMines = undefined;
 let buttons = undefined; // define empty var document.querySelector for all buttons
 
 const containerEl = document.querySelector(".container");
-const gridsizeInput = document.getElementById("gridsize")
-const minesInput = document.getElementById("mines")
+const gridsizeInput = document.getElementById("gridsize");
+const minesInput = document.getElementById("mines");
 const newGameBtn = document.getElementById("newGameBtn");
 
 // initializes new game state on clicking "new game" button
@@ -22,16 +22,16 @@ const newGame = (event) => {
 
     // gets input values for gridsize / mines
     if (gridsizeInput.value) {
-        globalGridLength = gridsizeInput.value
+        globalGridLength = gridsizeInput.value;
     } else {
-        globalGridLength = 10
+        globalGridLength = 10;
     }
     if (minesInput.value) {
-       globalMines = minesInput.value
+        globalMines = minesInput.value;
     } else {
-       globalMines = 10
+        globalMines = 10;
     }
-    console.log("mines", globalMines)
+    console.log("mines", globalMines);
     // init game state
     resetGame();
     generateGrid(globalGridLength);
@@ -131,6 +131,7 @@ const initClick = (el) => {
 
 // EXECUTES AT END OF TURN. RE RENDERS HTML / CSS BASED ON gridContainer state
 const gameStateUpdate = () => {
+    let revealedCount = 0;
     for (button of buttons) {
         // cleaning ID to be ready for index matching
         let coords = button.id;
@@ -153,6 +154,12 @@ const gameStateUpdate = () => {
         // setting button class to isRevealed if true
         if (gridContainer[index].isRevealed === true) {
             button.classList.add("isRevealed");
+            button.classList.remove("notRevealed");
+            revealedCount++;
+        }
+
+        if (gridContainer.length - globalMines === revealedCount) {
+            win();
         }
     }
 };
@@ -179,6 +186,27 @@ const displayGameOver = () => {
     gameOverContainer.addEventListener("click", newGameClick);
 };
 
+// WIN
+const win = () => {
+    const winContainer = document.createElement("div");
+    winContainer.classList.add("winContainer");
+
+    const winText = document.createElement("div");
+    winText.classList.add("winText");
+    winText.innerHTML = "You Won!";
+
+    document.body.appendChild(winContainer);
+    winContainer.appendChild(winText);
+
+    // create new game button
+    const newGameButton = document.createElement("button");
+    newGameButton.innerHTML = "New Game";
+    newGameButton.classList.add("newGameButton");
+    winContainer.appendChild(newGameButton);
+
+    winContainer.addEventListener("click", newGameClick);
+};
+
 // INITIALIZES NEW GAME ON CLICKING "New Game" BUTTON
 const newGameClick = (el) => {
     const isButton = el.target.nodeName === "BUTTON";
@@ -200,9 +228,14 @@ const resetGame = () => {
     }
     gridContainer = [];
     gameOverContainer = document.querySelector(".gameOverContainer");
+    winContainer = document.querySelector(".winContainer");
 
     if (gameOverContainer) {
         gameOverContainer.remove();
+    }
+
+    if (winContainer) {
+        winContainer.remove();
     }
 };
 

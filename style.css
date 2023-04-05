@@ -20,7 +20,7 @@
     background-color: red;
 }
 
-.gameOverContainer {
+.gameOverContainer, .winContainer {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -31,7 +31,7 @@
     background-color: rgb(223, 218, 218);
 }
 
-.gameOverText {
+.gameOverText, .winText{
     position: absolute;
     left: 50%;
     top: 35%;
