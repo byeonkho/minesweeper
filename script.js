@@ -15,6 +15,7 @@ const containerEl = document.querySelector(".container");
 const gridsizeInput = document.getElementById("gridsize");
 const minesInput = document.getElementById("mines");
 const newGameBtn = document.getElementById("newGameBtn");
+const toggleMinesBtn = document.getElementById("toggleMinesBtn");
 
 // initializes new game state on clicking "new game" button
 const newGame = (event) => {
@@ -55,7 +56,6 @@ const generateGrid = (gridLength = 10) => {
             gridContainer.push(newCellObj);
         }
     }
-    console.log("grid generated");
 };
 
 // DRAWS GRID ON HTML - draw grid rows and columns based on globalGridLength.
@@ -70,7 +70,7 @@ const generateMines = (numOfMines = 15) => {
 
     // catches infinite loop if mines generated > number of cells
     if (numOfMines > gridContainer.length) {
-        alert("too many mines");
+        alert("Too many mines!");
         return;
     }
 
@@ -81,8 +81,19 @@ const generateMines = (numOfMines = 15) => {
         } else {
             gridContainer[random].isMine = true;
         }
-
         minesPlaced++;
+    }
+};
+
+// toggle colour of mines
+const toggleMines = () => {
+    const allMines = document.querySelectorAll(".isMine");
+    for (mine of allMines) {
+        if (mine.style.backgroundColor === "pink") {
+            mine.style.backgroundColor = "red";
+        } else {
+            mine.style.backgroundColor = "pink";
+        }
     }
 };
 
@@ -389,3 +400,4 @@ createButtons();
 containerEl.addEventListener("click", initClick);
 containerEl.addEventListener("contextmenu", plantFlag);
 newGameBtn.addEventListener("click", newGame);
+toggleMinesBtn.addEventListener("click", toggleMines);
