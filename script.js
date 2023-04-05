@@ -8,7 +8,7 @@
 
 let gridContainer = [];
 let globalGridLength = undefined;
-let globalMines = 0
+let globalMines = 0;
 let buttons = undefined; // define empty var document.querySelector for all buttons
 
 const containerEl = document.querySelector(".container");
@@ -67,7 +67,8 @@ const drawGrid = () => {
 // MINE GENERATOR
 const generateMines = (numOfMines = 15) => {
     let minesPlaced = 0;
-    globalMines = numOfMines
+    globalMines = numOfMines;
+
     // catches infinite loop if mines generated > number of cells
     if (numOfMines > gridContainer.length) {
         alert("Too many mines!");
@@ -92,7 +93,7 @@ const toggleMines = () => {
         if (mine.style.backgroundColor === "rgb(147, 195, 158)") {
             mine.style.backgroundColor = "red";
         } else {
-            mine.style.backgroundColor = "rgb(147, 195, 158)"
+            mine.style.backgroundColor = "rgb(147, 195, 158)";
         }
     }
 };
@@ -136,7 +137,7 @@ const initClick = (el) => {
     for (i = 0; i < clickedCoords.length; i++) {
         clickedCoords[i] = parseInt(clickedCoords[i]);
     }
-    runSearch(clickedCoords, true);
+    runSearch(clickedCoords);
     gameStateUpdate();
 };
 
@@ -168,8 +169,8 @@ const gameStateUpdate = () => {
             button.classList.remove("notRevealed");
             revealedCount++;
         }
-        console.log(revealedCount)
-        console.log("length", gridContainer.length)
+
+        // checks win condition
         if (gridContainer.length - globalMines === revealedCount) {
             win();
         }
@@ -210,12 +211,11 @@ const win = () => {
     document.body.appendChild(winContainer);
     winContainer.appendChild(winText);
 
-    // create new game button
+    // create new game button and assign click listener
     const newGameButton = document.createElement("button");
     newGameButton.innerHTML = "New Game";
     newGameButton.classList.add("newGameButton");
     winContainer.appendChild(newGameButton);
-
     winContainer.addEventListener("click", newGameClick);
 };
 
@@ -250,6 +250,9 @@ const resetGame = () => {
         winContainer.remove();
     }
 };
+
+
+// toggles flag display on / off
 
 const plantFlag = (el) => {
     el.preventDefault();
