@@ -11,10 +11,10 @@ let globalGridLength = undefined;
 let globalMines = undefined;
 let buttons = undefined; // define empty var document.querySelector for all buttons
 const containerEl = document.querySelector(".container");
-const gridsizeInput = document.getElementById("gridsize");
-const minesInput = document.getElementById("mines");
+// const gridsizeInput = document.getElementById("gridsize");
+// const minesInput = document.getElementById("mines");
 
-const newGameBtn = document.getElementById("newGameBtn");
+// const newGameBtn = document.getElementById("newGameBtn");
 
 
 // GRID DATA STRUCTURE GENERATOR
