@@ -8,7 +8,7 @@
 
 let gridContainer = [];
 let globalGridLength = undefined;
-let globalMines = undefined;
+let globalMines = 0
 let buttons = undefined; // define empty var document.querySelector for all buttons
 
 const containerEl = document.querySelector(".container");
@@ -32,7 +32,7 @@ const newGame = (event) => {
     } else {
         globalMines = 10;
     }
-    console.log("mines", globalMines);
+
     // init game state
     resetGame();
     generateGrid(globalGridLength);
@@ -67,7 +67,7 @@ const drawGrid = () => {
 // MINE GENERATOR
 const generateMines = (numOfMines = 15) => {
     let minesPlaced = 0;
-
+    globalMines = numOfMines
     // catches infinite loop if mines generated > number of cells
     if (numOfMines > gridContainer.length) {
         alert("Too many mines!");
@@ -168,7 +168,8 @@ const gameStateUpdate = () => {
             button.classList.remove("notRevealed");
             revealedCount++;
         }
-
+        console.log(revealedCount)
+        console.log("length", gridContainer.length)
         if (gridContainer.length - globalMines === revealedCount) {
             win();
         }
