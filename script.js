@@ -10,12 +10,36 @@ let gridContainer = [];
 let globalGridLength = undefined;
 let globalMines = undefined;
 let buttons = undefined; // define empty var document.querySelector for all buttons
+
 const containerEl = document.querySelector(".container");
-// const gridsizeInput = document.getElementById("gridsize");
-// const minesInput = document.getElementById("mines");
+const gridsizeInput = document.getElementById("gridsize")
+const minesInput = document.getElementById("mines")
+const newGameBtn = document.getElementById("newGameBtn");
 
-// const newGameBtn = document.getElementById("newGameBtn");
+// initializes new game state on clicking "new game" button
+const newGame = (event) => {
+    event.preventDefault(); // prevent the default form submission behavior
 
+    // gets input values for gridsize / mines
+    if (gridsizeInput.value) {
+        globalGridLength = gridsizeInput.value
+    } else {
+        globalGridLength = 10
+    }
+    if (minesInput.value) {
+       globalMines = minesInput.value
+    } else {
+       globalMines = 10
+    }
+    console.log("mines", globalMines)
+    // init game state
+    resetGame();
+    generateGrid(globalGridLength);
+    generateMines(globalMines);
+    drawGrid();
+    createButtons();
+    gameStateUpdate();
+};
 
 // GRID DATA STRUCTURE GENERATOR
 const generateGrid = (gridLength = 10) => {
@@ -65,14 +89,10 @@ const generateMines = (numOfMines = 15) => {
 // CREATE BUTTON ELEMENTS AND APPEND TO HTML CONTAINER
 
 const createButtons = () => {
-
-    // create flag image var to append to each button
-
-   
-
     for (i = 0; i < gridContainer.length; i++) {
         const newButton = document.createElement("button");
         newButton.setAttribute("id", gridContainer[i].coords);
+        newButton.classList.add("isCell");
         if (gridContainer[i].isRevealed === false) {
             newButton.classList.add("notRevealed");
         }
@@ -80,14 +100,15 @@ const createButtons = () => {
             newButton.classList.add("isMine");
         }
 
+        // creates flag img and appends to each button
         containerEl.appendChild(newButton);
-        const flag = document.createElement("img")
-        flag.setAttribute("src", "flag.webp")
-        flag.classList.add("notFlagged", "flag")
-        newButton.appendChild(flag)
+        const flag = document.createElement("img");
+        flag.setAttribute("src", "flag.webp");
+        flag.classList.add("notFlagged", "flag");
+        newButton.appendChild(flag);
     }
     // assigns buttons DOM element to variable after buttons created
-    buttons = document.querySelectorAll("button");
+    buttons = document.querySelectorAll(".isCell");
 };
 
 // MAIN CLICK FUNCTION TO EXECUTE
@@ -179,70 +200,48 @@ const resetGame = () => {
     }
     gridContainer = [];
     gameOverContainer = document.querySelector(".gameOverContainer");
-    
+
     if (gameOverContainer) {
         gameOverContainer.remove();
     }
-      
-   
-    
 };
 
 const plantFlag = (el) => {
-    el.preventDefault()
+    el.preventDefault();
     if (el.target.nodeName === "BUTTON") {
-        const classList = el.target.lastChild.classList
+        const classList = el.target.lastChild.classList;
         for (i of classList) {
             if (i === "notFlagged") {
-            el.target.lastChild.classList.remove("notFlagged")
-            el.target.lastChild.classList.add("isFlagged")
-        
-            return
+                el.target.lastChild.classList.remove("notFlagged");
+                el.target.lastChild.classList.add("isFlagged");
+
+                return;
             }
             if (i === "isFlagged") {
-            el.target.lastChild.classList.remove("isFlagged")
-            el.target.lastChild.classList.add("notFlagged")
-           
-            return
+                el.target.lastChild.classList.remove("isFlagged");
+                el.target.lastChild.classList.add("notFlagged");
+
+                return;
             }
         }
-        }
-    else {
-        const classList = el.target.classList
+    } else {
+        const classList = el.target.classList;
         for (i of classList) {
             if (i === "notFlagged") {
-            el.target.classList.remove("notFlagged")
-            el.target.classList.add("isFlagged")
-         
-            return
+                el.target.classList.remove("notFlagged");
+                el.target.classList.add("isFlagged");
+
+                return;
             }
             if (i === "isFlagged") {
-            el.target.classList.remove("isFlagged")
-            el.target.classList.add("notFlagged")
-   
-            return
+                el.target.classList.remove("isFlagged");
+                el.target.classList.add("notFlagged");
+
+                return;
             }
         }
     }
-    }
-
-
-    // 
-    // console.log(classList)
-    // for (i of classList) {
-    //     console.log(typeof(i))
-    // }
-    // el.target.firstChild.classList.add("test")
-   
-// INITIALIZE GAME STATE
-
-generateGrid();
-generateMines();
-drawGrid();
-createButtons();
-containerEl.addEventListener("click", initClick);
-containerEl.addEventListener("contextmenu", plantFlag)
-
+};
 
 // SEARCH KEY
 
@@ -320,7 +319,6 @@ const checkAdjMines = (searchArray) => {
 };
 
 const runSearch = (coords) => {
-    
     // check if clicked cell is a mine
     checkMine(coords);
 
@@ -349,15 +347,12 @@ const runSearch = (coords) => {
     }
 };
 
-// const newGame = (event) => {
-//     event.preventDefault(); // prevent the default form submission behavior
-//     globalGridLength = gridsizeInput.value;
-//     globalMines = minesInput.value;
-//     resetGame();
-//     generateGrid(globalGridLength);
-//     generateMines(globalMines);
-//     drawGrid();
-//     createButtons();
-//     gameStateUpdate()
-// }
-// newGameBtn.addEventListener("click", newGame)
+// INITIALIZE GAME STATE
+
+generateGrid();
+generateMines();
+drawGrid();
+createButtons();
+containerEl.addEventListener("click", initClick);
+containerEl.addEventListener("contextmenu", plantFlag);
+newGameBtn.addEventListener("click", newGame);
