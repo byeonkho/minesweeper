@@ -8,9 +8,14 @@
 
 let gridContainer = [];
 let globalGridLength = undefined;
-let foundMine = false;
+let globalMines = undefined;
 let buttons = undefined; // define empty var document.querySelector for all buttons
 const containerEl = document.querySelector(".container");
+const gridsizeInput = document.getElementById("gridsize");
+const minesInput = document.getElementById("mines");
+
+const newGameBtn = document.getElementById("newGameBtn");
+
 
 // GRID DATA STRUCTURE GENERATOR
 const generateGrid = (gridLength = 10) => {
@@ -60,6 +65,11 @@ const generateMines = (numOfMines = 15) => {
 // CREATE BUTTON ELEMENTS AND APPEND TO HTML CONTAINER
 
 const createButtons = () => {
+
+    // create flag image var to append to each button
+
+   
+
     for (i = 0; i < gridContainer.length; i++) {
         const newButton = document.createElement("button");
         newButton.setAttribute("id", gridContainer[i].coords);
@@ -71,7 +81,12 @@ const createButtons = () => {
         }
 
         containerEl.appendChild(newButton);
+        const flag = document.createElement("img")
+        flag.setAttribute("src", "flag.webp")
+        flag.classList.add("notFlagged", "flag")
+        newButton.appendChild(flag)
     }
+    // assigns buttons DOM element to variable after buttons created
     buttons = document.querySelectorAll("button");
 };
 
@@ -93,16 +108,7 @@ const initClick = (el) => {
     gameStateUpdate();
 };
 
-// INITIALIZE GAME STATE
-
-generateGrid();
-generateMines();
-drawGrid();
-createButtons();
-containerEl.addEventListener("click", initClick);
-
-// assigns buttons DOM element to variable after buttons created
-
+// EXECUTES AT END OF TURN. RE RENDERS HTML / CSS BASED ON gridContainer state
 const gameStateUpdate = () => {
     for (button of buttons) {
         // cleaning ID to be ready for index matching
@@ -152,6 +158,7 @@ const displayGameOver = () => {
     gameOverContainer.addEventListener("click", newGameClick);
 };
 
+// INITIALIZES NEW GAME ON CLICKING "New Game" BUTTON
 const newGameClick = (el) => {
     const isButton = el.target.nodeName === "BUTTON";
     if (!isButton) {
@@ -165,14 +172,77 @@ const newGameClick = (el) => {
     gameStateUpdate();
 };
 
+// RESETS GAME BY CLEARING gridContainer AND ALL HTML ELEMENTS.
 const resetGame = () => {
     while (containerEl.firstChild) {
         containerEl.removeChild(containerEl.lastChild);
     }
     gridContainer = [];
     gameOverContainer = document.querySelector(".gameOverContainer");
-    gameOverContainer.remove();
+    
+    if (gameOverContainer) {
+        gameOverContainer.remove();
+    }
+      
+   
+    
 };
+
+const plantFlag = (el) => {
+    el.preventDefault()
+    if (el.target.nodeName === "BUTTON") {
+        const classList = el.target.lastChild.classList
+        for (i of classList) {
+            if (i === "notFlagged") {
+            el.target.lastChild.classList.remove("notFlagged")
+            el.target.lastChild.classList.add("isFlagged")
+        
+            return
+            }
+            if (i === "isFlagged") {
+            el.target.lastChild.classList.remove("isFlagged")
+            el.target.lastChild.classList.add("notFlagged")
+           
+            return
+            }
+        }
+        }
+    else {
+        const classList = el.target.classList
+        for (i of classList) {
+            if (i === "notFlagged") {
+            el.target.classList.remove("notFlagged")
+            el.target.classList.add("isFlagged")
+         
+            return
+            }
+            if (i === "isFlagged") {
+            el.target.classList.remove("isFlagged")
+            el.target.classList.add("notFlagged")
+   
+            return
+            }
+        }
+    }
+    }
+
+
+    // 
+    // console.log(classList)
+    // for (i of classList) {
+    //     console.log(typeof(i))
+    // }
+    // el.target.firstChild.classList.add("test")
+   
+// INITIALIZE GAME STATE
+
+generateGrid();
+generateMines();
+drawGrid();
+createButtons();
+containerEl.addEventListener("click", initClick);
+containerEl.addEventListener("contextmenu", plantFlag)
+
 
 // SEARCH KEY
 
@@ -222,7 +292,7 @@ const checkMine = (coords) => {
 // checks 8 adjacent cells and updates center cell with count of mines.
 const checkAdjMines = (searchArray) => {
     let mineCount = 0;
-    foundMine = false;
+    let foundMine = false;
 
     for (i of searchArray) {
         if (i === null) {
@@ -241,21 +311,23 @@ const checkAdjMines = (searchArray) => {
     });
 
     gridContainer[centerCellIndex].isRevealed = true;
-    
+
+    // update minecount if n mines > 0 and return true condition so runSearch exits
     if (foundMine === true) {
         gridContainer[centerCellIndex].mineCounter = mineCount;
+        return foundMine;
     }
 };
 
 const runSearch = (coords) => {
-
-    checkMine(coords); // check if clicked cell is a mine
+    
+    // check if clicked cell is a mine
+    checkMine(coords);
 
     let searchArray = searchKey(coords);
 
-    checkAdjMines(searchArray); // check 8 adj cells if any mines
-
-    if (foundMine === true) {
+    // check 8 adj cells if any mines. if any found, exit
+    if (checkAdjMines(searchArray) === true) {
         return;
     }
 
@@ -272,7 +344,20 @@ const runSearch = (coords) => {
         let newCoords = gridContainer[index].coords;
         // runs recursive search if square not yet revealed
         if (gridContainer[index].isRevealed === false) {
-            runSearch(newCoords, false);
+            runSearch(newCoords);
         }
     }
 };
+
+// const newGame = (event) => {
+//     event.preventDefault(); // prevent the default form submission behavior
+//     globalGridLength = gridsizeInput.value;
+//     globalMines = minesInput.value;
+//     resetGame();
+//     generateGrid(globalGridLength);
+//     generateMines(globalMines);
+//     drawGrid();
+//     createButtons();
+//     gameStateUpdate()
+// }
+// newGameBtn.addEventListener("click", newGame)
