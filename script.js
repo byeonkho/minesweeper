@@ -1,9 +1,3 @@
-// HOW TO ENSURE THAT FIRST CELL CLICKED IS NOT A MINE??
-
-// 1. this is beyond scope of MVP.
-// 2. SOLUTIONS
-//    a. if first cell clicked is a mine, refresh the board and start again
-
 // INITIALIZE GLOBAL VARIABLES
 
 let gridContainer = [];
@@ -17,6 +11,17 @@ const gridsizeInput = document.getElementById("gridsize");
 const minesInput = document.getElementById("mines");
 const newGameBtn = document.getElementById("newGameBtn");
 const toggleMinesBtn = document.getElementById("toggleMinesBtn");
+
+// bundles all reset game functions together
+
+const initAll = (globalGridLength, globalMines) => {
+    resetGame();
+    generateGrid(globalGridLength);
+    generateMines(globalMines);
+    drawGrid();
+    createButtons();
+    gameStateUpdate();
+};
 
 // initializes new game state on clicking "new game" button
 const newGame = (event) => {
@@ -36,12 +41,7 @@ const newGame = (event) => {
     }
 
     // init game state
-    resetGame();
-    generateGrid(globalGridLength);
-    generateMines(globalMines);
-    drawGrid();
-    createButtons();
-    gameStateUpdate();
+    initAll(globalGridLength, globalMines);
 };
 
 // GRID DATA STRUCTURE GENERATOR
@@ -125,6 +125,14 @@ const createButtons = () => {
     buttons = document.querySelectorAll(".isCell");
 };
 
+// searches for index in gridContainer given the coordinate key from button ID.
+
+const findIndexFn = (key) => {
+    return gridContainer.findIndex((el) => {
+        return JSON.stringify(el.coords) === JSON.stringify(key);
+    });
+};
+
 // MAIN CLICK FUNCTION TO EXECUTE
 
 const initClick = (el) => {
@@ -156,9 +164,7 @@ const gameStateUpdate = () => {
         }
 
         // finding index for matching
-        let index = gridContainer.findIndex((el) => {
-            return JSON.stringify(el.coords) === JSON.stringify(coords);
-        });
+        let index = findIndexFn(coords);
 
         // setting button innertext to minecount
         if (gridContainer[index].mineCounter > 0) {
@@ -228,12 +234,7 @@ const newGameClick = (el) => {
     if (!isButton) {
         return;
     }
-    resetGame();
-    generateGrid();
-    generateMines();
-    drawGrid();
-    createButtons();
-    gameStateUpdate();
+    initAll();
 };
 
 // RESETS GAME BY CLEARING gridContainer AND ALL HTML ELEMENTS.
@@ -329,18 +330,12 @@ const searchKey = ([x, y]) => {
 
 // checks if the clicked cell is a mine.
 const checkMine = (coords) => {
-    let index = gridContainer.findIndex((el) => {
-        return JSON.stringify(el.coords) === JSON.stringify(coords);
-    });
+    let index = findIndexFn(coords);
 
-    // if first click of game && cell is a mien, resets game until no mine on cell.
+    // if first click of game && cell is a mine, regens game until no mine on cell.
     if (firstClick === true && gridContainer[index].isMine === true) {
-        resetGame();
-        generateGrid(globalGridLength);
-        generateMines(globalMines);
-        drawGrid();
-        createButtons();
-        gameStateUpdate();
+        initAll(globalGridLength, globalMines);
+
         checkMine(coords);
     } else if (firstClick === true && gridContainer[index].isMine === false) {
         firstClick = false;
@@ -359,17 +354,16 @@ const checkAdjMines = (searchArray) => {
         if (i === null) {
             continue;
         }
-        let index = gridContainer.findIndex((el) => {
-            return JSON.stringify(el.coords) === JSON.stringify(i);
-        });
+
+        let index = findIndexFn(i);
+
         if (gridContainer[index].isMine === true) {
             mineCount++;
             foundMine = true;
         }
     }
-    let centerCellIndex = gridContainer.findIndex((el) => {
-        return JSON.stringify(el.coords) === JSON.stringify(searchArray[4]);
-    });
+
+    let centerCellIndex = findIndexFn(searchArray[4]);
 
     gridContainer[centerCellIndex].isRevealed = true;
 
@@ -398,9 +392,8 @@ const runSearch = (coords) => {
         if (array === null) {
             continue;
         }
-        let index = gridContainer.findIndex((el) => {
-            return JSON.stringify(el.coords) === JSON.stringify(array);
-        });
+        
+        let index = findIndexFn(array);
 
         let newCoords = gridContainer[index].coords;
         // runs recursive search if square not yet revealed
