@@ -9,15 +9,15 @@
 }
 
 .notRevealed {
-    background-color: pink;
+    background-color: rgb(147, 195, 158);
 }
 
 .isRevealed {
-    background-color: green;
+    background-color: rgba(204, 207, 208, 0.833);
 }
 
 .isMine {
-    background-color: red;
+    background-color: rgb(147, 195, 158);
 }
 
 .gameOverContainer, .winContainer {

@@ -89,10 +89,10 @@ const generateMines = (numOfMines = 15) => {
 const toggleMines = () => {
     const allMines = document.querySelectorAll(".isMine");
     for (mine of allMines) {
-        if (mine.style.backgroundColor === "pink") {
+        if (mine.style.backgroundColor === "rgb(147, 195, 158)") {
             mine.style.backgroundColor = "red";
         } else {
-            mine.style.backgroundColor = "pink";
+            mine.style.backgroundColor = "rgb(147, 195, 158)"
         }
     }
 };
