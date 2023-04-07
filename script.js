@@ -117,7 +117,7 @@ const createButtons = () => {
         // creates flag img and appends to each button
         containerEl.appendChild(newButton);
         const flag = document.createElement("img");
-        flag.setAttribute("src", "flag.webp");
+        flag.setAttribute("src", "img.webp");
         flag.classList.add("notFlagged", "flag");
         newButton.appendChild(flag);
     }
@@ -392,7 +392,7 @@ const runSearch = (coords) => {
         if (array === null) {
             continue;
         }
-        
+
         let index = findIndexFn(array);
 
         let newCoords = gridContainer[index].coords;
