@@ -4,8 +4,8 @@
   - [2.2 Search Array / Search Algorithm](#22-search-array--search-algorithm)
 - [3. Installation](#3-installation)
 - [4. Potential future features](#4-potential-future-features)
-- [4.1 Self solving algorithm](#41-self-solving-algorithm)
-- [4.2 Improved mine map generation](#42-improved-mine-map-generation)
+  - [4.1 Self solving algorithm](#41-self-solving-algorithm)
+  - [4.2 Improved mine map generation](#42-improved-mine-map-generation)
 - [5. Contact](#5-contact)
 
 # 1. Project Description
@@ -59,12 +59,12 @@ https://github.com/byeonkho/minesweeper
 
 # 4. Potential future features
 
-# 4.1 Self solving algorithm
+## 4.1 Self solving algorithm
 
 A self solving algorithm that plays the game itself. Would be a necessary
 precursor to 4.2.
 
-# 4.2 Improved mine map generation
+## 4.2 Improved mine map generation
 
 A key issue with the game is that "gambling" or "guessing" isn't very fun - for
 example, where there are no cells left on the map where the probability of it
